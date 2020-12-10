@@ -1,7 +1,7 @@
 
 f = open('/Users/mailund/Projects/adventofcode/2020/10/input.txt')
 adapters = list(sorted(map(int, f.read().split())))
-charges = [0] + adapters + [3 + adapters[-1]]
+charges = [0, *adapters, 3 + adapters[-1]]
 
 # Puzzle 1
 from collections import Counter
