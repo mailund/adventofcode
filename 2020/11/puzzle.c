@@ -79,7 +79,7 @@ int count_adjecant(struct map *map, int i, int j)
     return count;
 }
 
-static inline
+static
 char update_seat_puzzle1(struct map *map, int i, int j, char old_seat)
 {
     if (old_seat == '.')                              return old_seat;
@@ -122,7 +122,7 @@ int count_neighbours(struct map *map, int i, int j)
     return count;
 }
 
-static inline
+static 
 char update_seat_puzzle2(struct map *map, int i, int j, char old_seat)
 {
     if (old_seat == '.')                              return old_seat;
