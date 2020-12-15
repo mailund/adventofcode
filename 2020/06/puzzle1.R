@@ -1,24 +1,21 @@
-library(readr)
+library(tidyverse)
 
-# This is needed the second you work with strings in R... just
-# get rid of some of the annoying fluff. I am not happy with it
-# but I couldn't figure out how to work more sanely with it
-make_sane <- \(x) x |> unlist(use.names = FALSE)
-split <- \(x,s) strsplit(x, split = s) |> make_sane()
+# Separate functions because string handling is a mess in R
+split_groups  <- \(x) str_split(x, "\n\n")[[1]]
+split_answers <- \(x) str_split(x, "\n")[[1]] |> discard(\(x) x == "")
+make_set      <- \(x) str_split(x, "")[[1]]
 
-# Fixing map/reduce to work with pipelines
-map    <- \(x,f)        Map(f,x)           |> make_sane()
-reduce <- \(x, f, init) Reduce(f, x, init) |> make_sane()
+fname  <- '/Users/mailund/Projects/adventofcode/2020/06/test.txt'
+groups <- read_file(fname) |> split_groups()
 
-solve_puzzle <- \(upd, init)
-  \(infile) read_file(infile) |> split("\n\n")                      |>
-            map(\(group) split(group, '\n')                         |> 
-                 reduce(\(acc,ans) upd(acc, split(ans, "")), init)) |>
-            map(length) |> sum()
+solve_puzzle <- function(upd) {
+  group_answers <- \(x) x |> split_answers() |> map(make_set) |> reduce(upd)
+  solve_puzzle  <- \(x) x |> map(group_answers) |> map_dbl(length) |> sum()
+  solve_puzzle
+}
 
-puzzle1 <- solve_puzzle(union, c())
-puzzle2 <- solve_puzzle(intersect, split("abcdefghijklmnopqrstuvxyz", ""))
+puzzle1 <- solve_puzzle(union)
+puzzle2 <- solve_puzzle(intersect)
 
-puzzle1('test.txt')
-puzzle2('test.txt')
-
+puzzle1(groups)
+puzzle2(groups)

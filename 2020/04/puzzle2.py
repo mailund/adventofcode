@@ -1,8 +1,5 @@
 import sys
 
-valid1 = {'byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid', 'cid'}
-valid2 = {'byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'}
-
 def year_validator(year, x, y):
     year = int(year)
     return x <= year <= y
@@ -17,7 +14,7 @@ def height_validator(height):
     else:
         return False
 
-valid_hair_chars = {'a','b','c','d','e','f','0','1','2','3','4','5','6','7','8','9'}
+valid_hair_chars = { *'abcdef0123456789' }
 def hair_colour_validator(hair):
     if hair[0] != '#': return False
     hair = hair[1:]
@@ -50,6 +47,8 @@ validators = {
     'cid': lambda x: True
 }
 
+valid1 = {'byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid', 'cid'}
+valid2 = {'byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'}
 def valid_passport(fields):
     keys = set(fields)
     if keys != valid1 and keys != valid2: return False
@@ -58,18 +57,8 @@ def valid_passport(fields):
             return False
     return True
 
-passport_fields = {}
-no_valid = 0
-for line in (line.strip() for line in sys.stdin):
-    if not line:
-        if valid_passport(passport_fields):
-            no_valid += 1
-        passport_fields = {}
-        continue
-
-    for key, val in (x.split(':') for x in line.split()):
-        passport_fields[key] = val
-
-if valid_passport(passport_fields):
-    no_valid += 1
-print(no_valid)
+f = open('/Users/mailund/Projects/adventofcode/2020/04/input.txt')
+passports = f.read().split('\n\n')
+no_valid = sum(valid_passport(dict(field.split(':') for field in passport.split()))
+               for passport in passports)
+print(f"Puzzle #2: {no_valid}")
