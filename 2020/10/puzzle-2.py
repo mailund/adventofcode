@@ -6,6 +6,7 @@ charges = [0, *adapters, 3 + adapters[-1]]
 # Puzzle 1
 from collections import Counter
 cnt = Counter(charges[i] - charges[i-1] for i in range(1,len(charges)))
+print(cnt)
 print('Puzzle #1:', cnt[1] * cnt[3])
 
 # Puzzle 2

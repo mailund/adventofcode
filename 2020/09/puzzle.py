@@ -19,16 +19,20 @@ print(f"Puzzle #1: {invalid}")
 
 
 def cumsum(x):
-    y = [0, *x]
+    y = x[:]
     for i in range(1,len(x)):
         y[i] += y[i - 1]
     return y
 
+from numpy import cumsum
+#print(cumsum(x)[-10:])
+#print(numpy.cumsum(x)[-10:])
+
 def weakness(x):
-    acc = cumsum(x)
-    for int_len in range(len(acc), 0, -1):
-        for int_start in range(len(acc) - int_len):
-            if acc[int_start + int_len] - acc[int_start] == invalid:
+    cs = [0, *cumsum(x)]
+    for int_len in range(len(cs), 0, -1):
+        for int_start in range(len(cs) - int_len):
+            if cs[int_start + int_len] - cs[int_start] == invalid:
                 start = int_start
                 end = int_start + int_len
                 intv = x[start:end]
