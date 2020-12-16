@@ -4,7 +4,7 @@ def print_map(x):
 
 
 ## Puzzle #1:
-f = open('/Users/mailund/Projects/adventofcode/2020/11/test.txt')
+f = open('/Users/mailund/Projects/adventofcode/2020/11/input.txt')
 x = [line.strip() for line in f.readlines()]
 
 def local_map(x, i, j):
