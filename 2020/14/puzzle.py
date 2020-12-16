@@ -1,5 +1,5 @@
 import re
-f = open('/Users/mailund/Projects/adventofcode/2020/14/input.txt')
+f = open('/Users/mailund/Projects/adventofcode/2020/14/small-input.txt')
 program = f.readlines()
 
 class Mask(object):
@@ -70,3 +70,26 @@ def run_prog_2(program):
     return mem
 
 print(f"Puzzle #2: {sum(run_prog_2(program).values())}")
+
+
+def run_prog_2_(program):
+    mem = {}
+    for inst in program:
+        if inst.startswith('mask'):
+            mask = inst.split()[-1]
+        else:
+            addr, val = map(int, re.match(r"mem\[(\d*)\] = (\d*)", inst).groups())
+            addr = bin(addr).zfill(36)
+            masked_addr = ''.join(m if m in 'X1' else b for m,b in zip(mask, addr))
+            mem[masked_addr] = val * 2**masked_addr.count('X')
+    return mem
+
+print(f"Puzzle #2: {sum(run_prog_2_(program).values())}")
+
+
+masks = [inst.split()[-1] for inst in program if inst.startswith('mask')]
+
+
+def transpose(x):
+    return [[y[j] for y in x] for j in range(len(x[0]))]
+print([*map(set, transpose(masks))])

@@ -1,3 +1,4 @@
+from math import e, pi
 
 class Ship(object):
     def __init__(self):
@@ -13,8 +14,8 @@ class Ship(object):
     def S(self, amount): self.wp -= amount*1j
     def E(self, amount): self.wp += amount
     def W(self, amount): self.wp -= amount
-    def L(self, angle):  self.wp *= 1j ** (angle // 90)
-    def R(self, angle):  self.wp *= 1j ** (-angle // 90)
+    def L(self, angle):  self.wp *= e ** (angle * pi/180 * 1j)# 1j ** (angle // 90)
+    def R(self, angle):  self.wp *= e ** (-angle * pi/180 * 1j)#1j ** (-angle // 90)
     def F(self, amount): self.pos += amount * self.wp
 
 ship = Ship()
@@ -25,4 +26,8 @@ for op in [line.strip() for line in f]:
     dispatcher[op[0]](int(op[1:]))
 print(f"Puzzle #2: {round(ship.manhattan_dist)}")
 
+
+def x(angle):
+    return 1j ** (angle // 90), e ** (pi*angle/180*1j)
+print(x(90))
 
