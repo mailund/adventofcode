@@ -26,8 +26,3 @@ for op in [line.strip() for line in f]:
     dispatcher[op[0]](int(op[1:]))
 print(f"Puzzle #2: {round(ship.manhattan_dist)}")
 
-
-def x(angle):
-    return 1j ** (angle // 90), e ** (pi*angle/180*1j)
-print(x(90))
-

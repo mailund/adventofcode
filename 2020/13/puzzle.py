@@ -7,6 +7,9 @@ waiting = sorted((b - depart % b, b) for b in busses)
 w, b = waiting[0]
 print(f"Puzzle #1: {b * w}")
 
+w, b = min((b - depart % b, b) for b in busses)
+print(f"Puzzle #1: {b * w}")
+
 # Puzzle #2: We want a number x such that b - x mod b == offset
 #            (with a special case for offset 0, where x mod b = 0).
 # Looks like we have to solve the chinese remainder...
