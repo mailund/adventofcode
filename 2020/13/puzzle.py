@@ -14,7 +14,7 @@ print(f"Puzzle #1: {b * w}")
 #            (with a special case for offset 0, where x mod b = 0).
 # Looks like we have to solve the chinese remainder...
 
-f = open('/Users/mailund/Projects/adventofcode/2020/13/input.txt')
+f = open('/Users/mailund/Projects/adventofcode/2020/13/test.txt')
 depart = int(f.readline())
 busses = [(offset, int(bus))
             for offset, bus in enumerate(f.read().strip().split(','))
