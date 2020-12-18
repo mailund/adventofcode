@@ -90,6 +90,7 @@ print(f"Puzzle #2: {sum(run_prog_2_(program).values())}")
 masks = [inst.split()[-1] for inst in program if inst.startswith('mask')]
 
 
-def transpose(x):
-    return [[y[j] for y in x] for j in range(len(x[0]))]
-print([*map(set, transpose(masks))])
+
+for inst in program:
+    if inst.startswith('mask'):
+        print(inst.split()[-1].count('X'))

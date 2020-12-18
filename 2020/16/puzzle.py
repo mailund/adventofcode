@@ -71,7 +71,7 @@ def infer_rules(tickets):
     def satisfying_rules(fields):
         return set.intersection( *map(candidate_rules, fields) )
     field_rules = [ *enumerate(map(satisfying_rules, fields)) ]
-
+    
     # Now start eliminating...
     field_rules.sort(key = lambda x: len(x[1]))
     for i in range(len(field_rules)):
@@ -83,8 +83,41 @@ def infer_rules(tickets):
     return [ name for _,(name,) in field_rules ]
 
 rule_names = infer_rules(valid_tickets)
+print(rule_names)
 indices = [i for i,r in enumerate(rule_names) if r.startswith("departure")]
 
 from math import prod
 print(f"Puzzle #2: {prod(my_ticket[i] for i in indices)}")
 
+import heapq
+
+# Get the rules that each field can satisfy...
+def infer_rules(tickets):
+    # I want the fields, rather than the tickets, so transform...
+    fields = [[ticket[j] for ticket in valid_tickets]
+              for j in range(len(valid_tickets[0]))]
+
+    # For each field, identify the candidate rules
+    def candidate_rules(field):
+        return { r.name for r in rules if r.check(field) }
+    def satisfying_rules(fields):
+        return set.intersection( *map(candidate_rules, fields) )
+    field_rules = [ *enumerate(map(satisfying_rules, fields)) ]
+
+    assigned_rules = []
+    while field_rules:
+        singletons =  [ (i,r) for i,r in field_rules if len(r) == 1 ]
+        field_rules = [ (i,r) for i,r in field_rules if len(r) > 1  ]
+        assigned_rules.extend(singletons)        
+        removed = set.union( *[r for i,r in singletons] )
+        for _,s in field_rules:
+            s -= removed
+
+    assigned_rules.sort()
+    return [ name for _,(name,) in assigned_rules ]
+
+rule_names = infer_rules(valid_tickets)
+indices = [i for i,r in enumerate(rule_names) if r.startswith("departure")]
+
+from math import prod
+print(f"Puzzle #2: {prod(my_ticket[i] for i in indices)}")

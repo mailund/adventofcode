@@ -24,3 +24,4 @@ def count_paths(charges):
         tbl[w] = sum(tbl[v] for v in neighbours(w))
     return tbl[w]
 print(f'Puzzle #2: {count_paths(charges)}')
+

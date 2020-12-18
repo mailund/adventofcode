@@ -50,11 +50,9 @@ def grow_dim(dim):
 
 def next_map(old_map):
     new_map = Map()
-    x0,x1 = grow_dim(old_map.x_dim)
-    y0,y1 = grow_dim(old_map.y_dim)
-    z0,z1 = grow_dim(old_map.z_dim)
-    for x, y, z in product(range(x0,x1), range(y0,y1), range(z0,z1)):
-        new_map[x,y,z] = rule(old_map[x,y,z], old_map.neighbours(x,y,z))
+    for ax,ay,az in old_map.active:
+        for x,y,z in ((ax+i,ay+j,az+k) for i,j,k in _NEIGHBOURS):
+            new_map[x,y,z] = rule(old_map[x,y,z], old_map.neighbours(x,y,z))
     return new_map
 
 def evolve(m, n):
