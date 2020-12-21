@@ -1,57 +1,59 @@
 
-class CharRule(object):
-    def __init__(self, char):
-        self.char = char
-    def check(self, x, i):
-        if i < len(x) and x[i] == self.char:
-            yield i + 1
-
-class SeqRule(object):
-    def __init__(self, seq):
-        self.seq = seq
-    def check(self, x, i, r = 0):
-        if r == len(self.seq):
-            yield i
-        else:
-            for j in RULES[self.seq[r]].check(x, i):
-                yield from self.check(x, j, r + 1)
-
-class OrRule(object):
-    def __init__(self, seq_rules):
-        self.seq_rules = seq_rules
-    def check(self, x, i):
-        for rule in self.seq_rules:
-            yield from rule.check(x, i)
-
 import re
 def parse_rules(rules):
-    RULES = {}
+    terminals = []
+    nonterminals = []
     for rule in rules.split('\n'):
         m = re.match(r'(\d+): "(.)', rule)
         if m:
             i, char = m.groups()
-            RULES[i] = CharRule(char)
+            terminals.append((int(i), char))
         else:
             i, seqs = rule.split(':')
             seq_rules = []
             for seq in seqs.split('|'):
-                seq_rules.append(SeqRule(seq.split()))
-            RULES[i] = OrRule(seq_rules)
-    return RULES
+                seq_rules.append(list(map(int, seq.split())))
+            nonterminals.append((i,seq_rules))
+    return terminals, nonterminals
 
+def increasing_intervals(min_length, max_length):
+    """Generates increasingly large intervals, starting
+    with min_length and going up to max_length."""
+    for l in range(min_length, max_length + 1):
+        for i in range(max_length + 1 - l):
+            yield i, i + l
+
+def partition(i, j, k):
+    """Generates tuples that split the interval (i,j) into
+    k partitions."""
+    assert k >= 2
+    if k == 2:
+        yield from ((x,) for x in range(i+1, j-1))
+    else:
+        for l in range(i+1, j-1):
+            yield from (((l,) + x) for x in partition(l, j, k - 1))
+
+
+
+import numpy as np
 def matches(test, RULES):
-    for i in RULES['0'].check(test, 0):
-        if i == len(test): return True
+    term, nonterm = RULES
+    dims = (len(term)+len(nonterm), len(test) + 1, len(test) + 1)
+    matches = np.ndarray(dims, dtype = bool)
+
+    for i in range(len(test)):
+        for rule,x in term:
+            matches[rule,i,i+1] = test[i] == x
+
+    for i, j in increasing_intervals(2, len(test)):
+        for rule, subrules in nonterm:
+            
+    
     return False
 
 f = open('/Users/mailund/Projects/adventofcode/2020/19/input.txt')
 rules, tests = f.read().split('\n\n')
 RULES = parse_rules(rules)
 tests = tests.split('\n')
-print(f"Puzzle #2: {sum( matches(test, RULES) for test in tests )}")
-
-RULES['8']  = OrRule([SeqRule(['42']),SeqRule(['42','8'])])
-RULES['11'] = OrRule([SeqRule(['42', '31']),SeqRule(['42','11', '31'])])
-print(f"Puzzle #2: {sum( matches(test, RULES) for test in tests )}")
-
+print(f"Puzzle #1: {sum( matches(test, RULES) for test in tests )}")
 
