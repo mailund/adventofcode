@@ -77,11 +77,12 @@ def play(starting_cups):
         link = link.next
 
     # Now play the game...
-    for i in range(10_000_000):
+    for i in range(10):#_000_000):
         if i % 1_000_000 == 0:
             print(i)
         
         removed = take_three(cup)
+        print(removed)
 
         dest = dec(cup.val)
         while dest in removed:
